@@ -1,77 +1,108 @@
 import SignUp from "./SignUp";
-import { useState } from "react";
+import { NavLink } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { LoginUser } from "../Zustand";
 
 const SignIn = () => {
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [loginErrors, setLoginErrors] = useState([]);
+  const navigate = useNavigate();
+  const setUser = LoginUser((state) => state.setUser);
 
-  const savedUser = JSON.parse(localStorage.getItem("registeredUser"));
-  const savedEmail = savedUser?.email;
-  const savedPassword = savedUser?.password;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  const loginInfoCheck = (e) => {
-    e.preventDefault();
-    const newloginErrors = [];
+  const onSubmit = async (data) => {
+    const { username, email, password } = data;
+    try {
+      const response = await fetch(
+        "https://realworld.habsida.net/api/users/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user: { email, password },
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Что-то пошло не так!");
+      }
 
-    if (loginEmail !== savedEmail) {
-      newloginErrors.push("non-existing login!");
-    }
+      const responseData = await response.json();
+      console.log("Success", responseData);
+      localStorage.setItem("registeredUser", JSON.stringify(responseData.user));
+      localStorage.setItem("token", responseData.user.token);
+   
+      setUser(responseData.user);
+      alert("log in successuful!");
 
-    if (loginPassword !== savedPassword) {
-      newloginErrors.push("password invalid!");
-    }
-
-    setLoginErrors(newloginErrors);
-
-    if (newloginErrors.length === 0) {
-      console.log("log in successufully!", { loginEmail, loginPassword });
-      alert("log in successufully");
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      alert("Что-то пошло не так!");
     }
   };
 
   return (
     <div className="signin">
-      <form action="" className="signin-form" onSubmit={loginInfoCheck}>
-        <h1 className="signin-title">Sign In</h1>
-        {loginErrors.length > 0 ? (
-          <ul className="signin-errors-list">
-            {loginErrors.map((err, index) => (
-              <li className="signin-errors-item" key={index}>
-                {err}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <>
-            <div className="signin-inputs">
-              <input
-                className="signin-email-input"
-                type="text"
-                value={loginEmail}
-                placeholder="Enter Email"
-                onChange={(el) => setLoginEmail(el.target.value)}
-                required
-              />
-              
-              <input
-                className="signin-password-input"
-                type="password"
-                value={loginPassword}
-                placeholder="Enter Password"
-                onChange={(el) => setLoginPassword(el.target.value)}
-                required
-              />
-            <button type="submit" className="signin-btn">
-              Sign In
-            </button>
-            </div>
-          </>
-        )}
+      <form
+        className="signin-form"
+        method="POST"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <h1 className="signin-title">Log In</h1>
+        <div className="signin-inputs">
+          <input
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Invalid email format",
+              },
+            })}
+            placeholder="Enter email"
+          />
+          {errors.email && <p className="error">{errors.email.message}</p>}
+          <input
+            type="password"
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters long",
+              },
+              maxLength: {
+                value: 40,
+                message: "Password must be under 40 characters",
+              },
+            })}
+            placeholder="Enter password"
+          />
+          {errors.password && (
+            <p className="error">{errors.password.message}</p>
+          )}
+        </div>
+        <button className="signin-btn" type="submit">
+          Sign In
+        </button>
       </form>
+      <div className="registration-nav">
+        <p> Don't have an account yet? </p>
+        <NavLink to="/sign-up" className="registration-nav-link">
+          Sign Up first
+        </NavLink>
+      </div>
     </div>
   );
 };
-
 export default SignIn;

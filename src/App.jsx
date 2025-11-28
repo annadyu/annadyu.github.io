@@ -23,7 +23,6 @@ import PageEditing from "./assets/pages/PageEditing.jsx";
 import RootLayout from "./layouts/RootLayout.jsx";
 import { BlogDetailsLoader } from "./assets/pages/BlogDetails.jsx";
 import PrivateRoute from "./layouts/PrivateRoute.jsx";
-import LogInLayout from "./layouts/LogInLayout.jsx";
 
 function App() {
   const [articles, setArticles] = useState([]);
@@ -35,10 +34,10 @@ function App() {
           index
           element={<MainPage articles={articles} setArticles={setArticles} />}
         />
-        <Route path="login" element={<LogInLayout />}>
+      
           <Route path="sign-in" element={<SignIn />} />
           <Route path="sign-up" element={<SignUp />} />
-        </Route>
+        
         <Route element={<PrivateRoute/>}>
           <Route
             path="/new-article"

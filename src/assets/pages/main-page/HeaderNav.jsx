@@ -1,11 +1,14 @@
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { LoginUser } from "../Zustand";
 
 const HeaderNav = () => {
   const navigate = useNavigate();
 
+  const user = LoginUser((state) => state.user);
+
   const savedUser = JSON.parse(localStorage.getItem("registeredUser"));
-  const savedUsername = savedUser?.username;
+  // const savedUsername = savedUser?.username;
 
   return (
     <div className="header-nav">
@@ -17,20 +20,19 @@ const HeaderNav = () => {
         <NavLink to="/new-article" className="nav-tag new-post">
           New post
         </NavLink>
-        {savedUser ? (
+  {user || savedUser ?  (
           <NavLink to="/profile" className="nav-tag settings">
             Setings
           </NavLink>
         ) : (
-          <NavLink to="/login" className="nav-tag settings">
+          <NavLink to="/sign-in" className="nav-tag settings">
             Setings
           </NavLink>
         )}
-        {savedUser ? (
-          <NavLink className="nav-tag login-icon"> {savedUsername}</NavLink>
+     {user || savedUser ?  (
+          <NavLink className="nav-tag login-icon">   {user?.username || savedUser.username}</NavLink>
         ) : (
-          // <NavLink to="/profile" className="nav-tag login-icon"> {savedUsername}</NavLink>
-          <NavLink to="/login" className="nav-tag login-icon">
+          <NavLink to="/sign-in" className="nav-tag login-icon">
             Log In
           </NavLink>
         )}

@@ -245,6 +245,7 @@ body {
 }
 
 .blog-author {
+  margin-left: 15px;
   color: #5CB85C;
   font-weight: 600;
   font-size: 16px;
@@ -439,8 +440,13 @@ body {
   color: rgb(165, 76, 76);
 }
 
+
 .signup {
   margin-top: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
 }
 
 .signup-form {
@@ -474,6 +480,29 @@ body {
   border: 1px solid #AAAAAA;
   color: black;
 }
+
+.signin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.registration-nav {
+  display: flex;
+  margin-top: 50px;
+  color: #AAAAAA;
+}
+
+.registration-nav p {
+  margin-right: 25px;
+}
+
+.registration-nav-link {
+  text-decoration: underline;
+}
+
 
 .signin-inputs input {
   width: 480px;

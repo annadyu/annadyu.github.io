@@ -9,13 +9,39 @@ const BlogDetails = ({ setArticles, articles }) => {
   const article = useLoaderData();
   const { slug } = useParams();
   const [showConfirm, setShowConfirm] = useState(false);
-
-  const deleteArticle = (slug) => {
-    const newArticles = articles.filter((articles) => articles.slug !== slug);
-    setArticles(newArticles);
-    // localStorage.removeItem("localArticles");
-    localStorage.setItem("localArticles", JSON.stringify(newArticles));
-    navigate("/");
+// const newArticles = articles.filter((articles) => articles.slug !== slug);
+//     setArticles(newArticles);
+//     // localStorage.removeItem("localArticles");
+//     localStorage.setItem("localArticles", JSON.stringify(newArticles));
+//     navigate("/");
+  const deleteArticle = async (data) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(
+        `https://realworld.habsida.net/api/articles/${slug}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Token ${token}`,
+          }
+        });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.log("SERVER ERROR:", errorData);
+        alert(JSON.stringify(errorData.errors, null, 2));
+        return;
+      }
+      // const responseData = await response.json();
+      // console.log("Success", responseData);
+      // localStorage.setItem(
+      //   "createdArticle",
+      //   JSON.stringify([responseData.article])
+      // );
+      alert("success!");
+    } catch (err) {
+      console.log(err);
+      alert("Что-то пошло не так!");
+    }
   };
 
   // const dataToString = new Date(date).toLocaleDateString("ko-KR", {
@@ -50,7 +76,7 @@ const BlogDetails = ({ setArticles, articles }) => {
               <button
                 className="confirm-yes"
                 onClick={() => {
-                  deleteArticle(slug);
+                  deleteArticle();
                   setShowConfirm(false);
                 }}
               >

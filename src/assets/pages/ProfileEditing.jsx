@@ -9,9 +9,9 @@ const ProfileEditing = () => {
     navigate("/login");
   };
   const savedUser = JSON.parse(localStorage.getItem("registeredUser")) || {};
-  const savedEmail = savedUser?.email;
-  const savedPassword = savedUser?.password;
-  const savedUsername = savedUser?.username;
+  const savedEmail = savedUser?.email ?? "";
+  const savedPassword = "";
+  const savedUsername = savedUser?.username ?? "";
 
   const {
     register,
@@ -23,16 +23,45 @@ const ProfileEditing = () => {
       username: savedUsername,
       email: savedEmail,
       password: savedPassword,
-      passwordRepeat: savedUsername,
+      passwordRepeat: savedPassword,
+      avatar: savedUser?.image ?? "",
     },
   });
+  const onSubmit = async (data) => {
+    const { username, email, password, avatar } = data;
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch("https://realworld.habsida.net/api/user", {
+        method: "PUT",
+        headers: {
+          Authorization: `${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          image: avatar,
+        }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.log("SERVER ERROR:", errorData);
+        alert(JSON.stringify(errorData.errors, null, 2));
+        return;
+      }
 
-  const onSubmit = (data) => {
-    console.log("Success:", data);
-    alert("Profile editing successuful!");
-    localStorage.setItem("registeredUser", JSON.stringify(data));
+      const responseData = await response.json();
+      localStorage.setItem("registeredUser", JSON.stringify(responseData.user));
+      console.log("Success", responseData);
+      alert("editing successuful!");
+
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      alert("Что-то пошло не так!");
+    }
   };
-
   const password = watch("password");
 
   return (
@@ -94,7 +123,9 @@ const ProfileEditing = () => {
             placeholder="Enter avatar Url"
           />
           {errors.avatar && <p className="error">{errors.avatar.message}</p>}
-          <button className="editing-btn" type="submit">Submit</button>
+          <button className="editing-btn" type="submit">
+            Submit
+          </button>
           <button type="button" className="logout-btn" onClick={handleLogout}>
             Or click here to logout
           </button>

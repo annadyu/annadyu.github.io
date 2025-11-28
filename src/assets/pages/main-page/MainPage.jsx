@@ -28,14 +28,7 @@ const MainPage = ({ articles, setArticles }) => {
         return res.json();
       })
       .then((data) => {
-        const localArticles =
-          JSON.parse(localStorage.getItem("localArticles")) || [];
-        if (currentPage === 1) {
-          setArticles([...localArticles, ...data.articles]);
-        } else {
           setArticles(data.articles);
-        }
-        setTotalArticles(data.articlesCount + localArticles.length);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));

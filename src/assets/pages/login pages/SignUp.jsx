@@ -1,41 +1,7 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-  // сначала не заметила в условиях что надо сделать через react hook form. буду благодарна если просто глазами пробежитесь
-  //   const [errors, setErrors] = useState("");
-  //   const [username, setUsername] = useState("");
-  //   const [password, setPassword] = useState("");
-  //   const [passwordRepeat, setPasswordRepeat] = useState("");
-  //   const [email, setEmail] = useState("");
-
-  //   const handleSubmit = (e) => {
-  //     e.preventDefault();
-  //     const validationError = [];
-
-  //     if (username.length < 3 || username.length > 20) {
-  //       validationError.push("Username must be between 3 and 20 characters");
-  //     }
-
-  //     if (password.length < 4 || password.length > 40) {
-  //       validationError.push("password must be between 6 and 40 characters");
-  //     }
-
-  //     if (password !== passwordRepeat) {
-  //       validationError.push("password and repeat password must match");
-  //     }
-
-  //     setErrors(validationError);
-  //     localStorage.setItem("registeredEmail", email);
-  //     localStorage.setItem("registeredPassword", password);
-  //     localStorage.setItem("registeredUsername", username);
-
-  //     if (validationError.length === 0) {
-  //       console.log("submitted successufully!", { username, email, password });
-  //       alert("registration successuful");
-  //     }
-  //   };
   const navigate = useNavigate();
   const {
     register,
@@ -51,11 +17,32 @@ const SignUp = () => {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("Success:", data);
-    alert("registration successuful!");
-    localStorage.setItem("registeredUser", JSON.stringify(data));
-     navigate("/login/sign-in");
+  const onSubmit = async (data) => {
+    const { username, email, password } = data;
+    try {
+      const response = await fetch("https://realworld.habsida.net/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user: { username, email, password },
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Что-то пошло не так!");
+      }
+
+      const responseData = await response.json();
+      console.log("Success", responseData);
+      localStorage.setItem("registeredUser", JSON.stringify(responseData.user));
+      alert("registration successuful!");
+
+      navigate("/sign-in");
+    } catch (error) {
+      console.log(error);
+      alert("Что-то пошло не так!");
+    }
   };
 
   const password = watch("password");

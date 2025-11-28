@@ -1,16 +1,17 @@
 import { Link } from "react-router-dom";
 import Article from "./Article";
+import { useNavigate } from "react-router-dom";
 
 const Articles = ({ articles, setArticles }) => {
+    const navigate = useNavigate();
   const handleLike = (slug) => {
-    const updated = articles.map((article) =>
+    const updatedLike = articles.map((article) =>
       article.slug === slug
         ? { ...article, favoritesCount: article.favoritesCount + 1 }
         : article
     );
-
-    setArticles(updated);
-    localStorage.setItem("localArticles", JSON.stringify(updated));
+    setArticles(updatedLike);
+   navigate("/")
   };
   return (
     <ul className="blog-list">
