@@ -6,7 +6,7 @@ const ProfileEditing = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("registeredUser");
-    navigate("/login");
+    navigate("/sign-in");
   };
   const savedUser = JSON.parse(localStorage.getItem("registeredUser")) || {};
   const savedEmail = savedUser?.email ?? "";
