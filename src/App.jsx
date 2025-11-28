@@ -34,11 +34,15 @@ function App() {
           index
           element={<MainPage articles={articles} setArticles={setArticles} />}
         />
-      
-          <Route path="sign-in" element={<SignIn />} />
-          <Route path="sign-up" element={<SignUp />} />
-        
-        <Route element={<PrivateRoute/>}>
+        <Route
+          path="articles"
+          element={<MainPage articles={articles} setArticles={setArticles} />}
+        />
+
+        <Route path="sign-in" element={<SignIn />} />
+        <Route path="sign-up" element={<SignUp />} />
+
+        <Route element={<PrivateRoute />}>
           <Route
             path="/new-article"
             element={
