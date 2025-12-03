@@ -1,4 +1,3 @@
-import SignUp from "./SignUp";
 import { NavLink } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +5,7 @@ import { LoginUser } from "../Zustand";
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const setUser = LoginUser((state) => state.setUser);
+  const { setUser } = LoginUser();
 
   const {
     register,
@@ -20,7 +19,7 @@ const SignIn = () => {
   });
 
   const onSubmit = async (data) => {
-    const { username, email, password } = data;
+    const {email, password } = data;
     try {
       const response = await fetch(
         "https://realworld.habsida.net/api/users/login",
@@ -39,10 +38,6 @@ const SignIn = () => {
       }
 
       const responseData = await response.json();
-      console.log("Success", responseData);
-      localStorage.setItem("registeredUser", JSON.stringify(responseData.user));
-      localStorage.setItem("token", responseData.user.token);
-   
       setUser(responseData.user);
       alert("log in successuful!");
 

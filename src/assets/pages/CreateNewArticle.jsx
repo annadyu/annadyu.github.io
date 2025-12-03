@@ -1,9 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { LoginUser } from "./Zustand";
 
 const CreateNewArticle = () => {
   const navigate = useNavigate();
-
+   const { user } = LoginUser();
+   
+     if (!user) {
+    navigate("/");
+     }
   const {
     register,
     handleSubmit,
@@ -18,29 +23,6 @@ const CreateNewArticle = () => {
     },
   });
 
-  // const savedUser = JSON.parse(localStorage.getItem("registeredUser"));
-  //   const savedUsername = savedUser?.username;
-  //   const addNewArticle = () => {
-  //     const newArticle = {
-  //       slug: Date.now().toString(),
-  //       title: data.title,
-  //       description: data.description,
-  //       body: data.body,
-  //       createdAt: new Date().toISOString(),
-  //       favoritesCount: 0,
-  //       tagList: [],
-  //       author: {
-  //         username: savedUsername,
-  //       },
-  //     };
-  //     setArticles([newArticle, ...articles]);
-  //     const updated = [newArticle, ...articles];
-  //     localStorage.setItem("localArticles", JSON.stringify(updated));
-  //   };
-  //   addNewArticle();
-
-  //   reset();
-
   const onSubmit = async (data) => {
     const {
       title,
@@ -49,8 +31,9 @@ const CreateNewArticle = () => {
       tagList,
     } = data;
     const tags = tagList ? tagList.split(",").map((tag) => tag.trim()) : [];
-    const token = localStorage.getItem("token");
+   const token = user?.token;
     try {
+      console.log("TOKEN:", token);
       const response = await fetch(
         "https://realworld.habsida.net/api/articles",
         {
@@ -72,10 +55,6 @@ const CreateNewArticle = () => {
       }
       const responseData = await response.json();
       console.log("Success", responseData);
-      localStorage.setItem(
-        "createdArticle",
-        JSON.stringify([responseData.article])
-      );
       alert("success!");
       navigate("/");
     } catch (err) {

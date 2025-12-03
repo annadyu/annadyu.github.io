@@ -1,11 +1,9 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
-  Routes,
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { useEffect, useState } from "react";
 import "./App.css";
 
 //pages
@@ -25,35 +23,29 @@ import { BlogDetailsLoader } from "./assets/pages/BlogDetails.jsx";
 import PrivateRoute from "./layouts/PrivateRoute.jsx";
 
 function App() {
-  const [articles, setArticles] = useState([]);
-
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>
-        <Route
-          index
-          element={<MainPage articles={articles} setArticles={setArticles} />}
-        />
-        <Route
-          path="articles"
-          element={<MainPage articles={articles} setArticles={setArticles} />}
-        />
-
-        <Route path="sign-in" element={<SignIn />} />
-        <Route path="sign-up" element={<SignUp />} />
+        <Route index element={<MainPage />} />
+        <Route path="articles" element={<MainPage />} />
 
         <Route element={<PrivateRoute />}>
+          <Route path="sign-in" element={<SignIn />} />
+          <Route path="sign-up" element={<SignUp />} />
+        </Route>
+
+       
           <Route
             path="/new-article"
             element={
-              <CreateNewArticle articles={articles} setArticles={setArticles} />
+              <CreateNewArticle  />
             }
           />
-        </Route>
+        
         <Route
           path="/articles/:slug"
           element={
-            <BlogDetails articles={articles} setArticles={setArticles} />
+            <BlogDetails  />
           }
           loader={BlogDetailsLoader}
           errorElement={<NotFound />}

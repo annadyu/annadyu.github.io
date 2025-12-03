@@ -1,13 +1,12 @@
 import VideoNavigation from "./VideoNavigation.jsx";
 import Header from "./Header.jsx";
-import HeaderNav from "./HeaderNav.jsx";
 import Articles from "./Articles.jsx";
-import Blog from "./Article.jsx";
+import Article from "./Article.jsx";
 import Pagination from "./pagination.jsx";
-import ProfileEditing from "../ProfileEditing.jsx";
 import { useEffect, useState } from "react";
 
-const MainPage = ({ articles, setArticles }) => {
+const MainPage = () => {
+   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);

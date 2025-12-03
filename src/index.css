@@ -325,6 +325,18 @@ body {
   border-radius: 10px;
 }
 
+.signup-nav {
+  display: flex;
+  margin-bottom: 30px;
+  color: #AAAAAA;
+}
+
+
+.signup-nav p {
+  margin-right: 25px;
+}
+
+
 .pagination {
   display: flex;
   align-items: center;

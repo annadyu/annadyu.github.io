@@ -1,8 +1,9 @@
 import { Outlet, Navigate } from "react-router-dom";
+import { LoginUser } from "../assets/pages/Zustand";
 
 const PrivateRoute = () => {
-  const savedUser = JSON.parse(localStorage.getItem("registeredUser"));
-  return savedUser ? <Outlet /> : <Navigate to="/sign-in" replace />;
+  const { user } = LoginUser();
+  return user ?  <Navigate to="/" replace /> : <Outlet /> ;
 };
 
 export default PrivateRoute;

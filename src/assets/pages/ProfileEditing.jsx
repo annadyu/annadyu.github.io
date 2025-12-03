@@ -1,35 +1,32 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { LoginUser } from "./Zustand";
 
 const ProfileEditing = () => {
   const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem("registeredUser");
-    navigate("/sign-in");
-  };
-  const savedUser = JSON.parse(localStorage.getItem("registeredUser")) || {};
-  const savedEmail = savedUser?.email ?? "";
-  const savedPassword = "";
-  const savedUsername = savedUser?.username ?? "";
+  const { user, setUser, clearUser } = LoginUser();
 
+  if (!user) {
+    navigate("/");
+  }
+  const handleLogout = () => {
+    clearUser();
+    navigate("/");
+  };
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      username: savedUsername,
-      email: savedEmail,
-      password: savedPassword,
-      passwordRepeat: savedPassword,
-      avatar: savedUser?.image ?? "",
+      username: user?.username || "",
+      email: user?.email || "",
+      avatar: user?.image ?? "",
     },
   });
   const onSubmit = async (data) => {
-    const { username, email, password, avatar } = data;
-    const token = localStorage.getItem("token");
+    const { username, email, avatar } = data;
+    const token = user?.token;
     try {
       const response = await fetch("https://realworld.habsida.net/api/user", {
         method: "PUT",
@@ -40,7 +37,6 @@ const ProfileEditing = () => {
         body: JSON.stringify({
           username,
           email,
-          password,
           image: avatar,
         }),
       });
@@ -52,17 +48,13 @@ const ProfileEditing = () => {
       }
 
       const responseData = await response.json();
-      localStorage.setItem("registeredUser", JSON.stringify(responseData.user));
-      console.log("Success", responseData);
+      setUser(responseData.user);
       alert("editing successuful!");
-
-      navigate("/");
     } catch (error) {
       console.log(error);
       alert("Что-то пошло не так!");
     }
   };
-  const password = watch("password");
 
   return (
     <div className="editing">
@@ -93,24 +85,6 @@ const ProfileEditing = () => {
             placeholder="Enter email"
           />
           {errors.email && <p className="error">{errors.email.message}</p>}
-          <input
-            type="password"
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters long",
-              },
-              maxLength: {
-                value: 40,
-                message: "Password must be under 40 characters",
-              },
-            })}
-            placeholder="Enter password"
-          />
-          {errors.password && (
-            <p className="error">{errors.password.message}</p>
-          )}
           <input
             type="text"
             {...register("avatar", {

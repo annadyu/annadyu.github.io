@@ -1,31 +1,45 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { LoginUser } from "./Zustand";
+import { useEffect,useState } from "react";
 
 const PageEditing = () => {
   const navigate = useNavigate();
   const { slug } = useParams();
+  const { user } = LoginUser();
+   const [article, setArticle] = useState(null); 
 
-  const createdArticle =
-    JSON.parse(localStorage.getItem("createdArticle")) || [];
-  const article = createdArticle.find((el) => el.slug === slug);
-
-  if (!article) return <p>Loading...</p>;
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
-      title: article.title,
-      description: article.description,
-      body: article.body,
+      title: "",
+      description: "",
+      body: "",
     },
   });
 
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        const response = await fetch(`https://realworld.habsida.net/api/articles/${slug}`);
+        const data = await response.json();
+        setArticle(data.article);
+        reset({ 
+          title: data.article.title,
+          description: data.article.description,
+          body: data.article.body,
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchArticle();
+  }, [slug, reset]);
+
+
   const onSubmit = async (data) => {
     const { title, description, body } = data;
-    const token = localStorage.getItem("token");
+
+    const token = user?.token;
     try {
       const response = await fetch(
         `https://realworld.habsida.net/api/articles/${slug}`,
@@ -48,10 +62,6 @@ const PageEditing = () => {
       }
       const responseData = await response.json();
       console.log("Success", responseData);
-      localStorage.setItem(
-        "createdArticle",
-        JSON.stringify([responseData.article])
-      );
       alert("success!");
       navigate(`/articles/${responseData.article.slug}`);
     } catch (err) {
@@ -85,9 +95,7 @@ const PageEditing = () => {
             placeholder="Write your article here..."
             {...register("body", { required: true, minLength: 3 })}
           />
-          {errors.body && (
-            <p className="error">min 3 characters</p>
-          )}
+          {errors.body && <p className="error">min 3 characters</p>}
         </div>
         <button type="submit" className="new-btn">
           Submit

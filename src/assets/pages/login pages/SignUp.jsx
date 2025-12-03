@@ -1,8 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { LoginUser } from "../Zustand";
+import { NavLink } from "react-router-dom";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { setUser } = LoginUser();
   const {
     register,
     handleSubmit,
@@ -19,6 +22,7 @@ const SignUp = () => {
 
   const onSubmit = async (data) => {
     const { username, email, password } = data;
+
     try {
       const response = await fetch("https://realworld.habsida.net/api/users", {
         method: "POST",
@@ -34,11 +38,10 @@ const SignUp = () => {
       }
 
       const responseData = await response.json();
-      console.log("Success", responseData);
-      localStorage.setItem("registeredUser", JSON.stringify(responseData.user));
+      setUser(responseData.user);
       alert("registration successuful!");
 
-      navigate("/sign-in");
+      navigate("/");
     } catch (error) {
       console.log(error);
       alert("Что-то пошло не так!");
@@ -116,6 +119,12 @@ const SignUp = () => {
         <div className="signup-agree">
           <p>By creating an account you agree to personal data processing</p>
           <input type="checkbox" required />
+        </div>
+        <div className="signup-nav">
+          <p> Have an account already? </p>
+          <NavLink to="/sign-in" className="registration-nav-link">
+            Go to sign in
+          </NavLink>
         </div>
 
         <button className="signup-btn" type="submit">
