@@ -1,17 +1,32 @@
 import { Link } from "react-router-dom";
 import Article from "./Article";
 import { useNavigate } from "react-router-dom";
+import { LoginUser } from "../Zustand";
 
-const Articles = ({ articles, setArticles }) => {
+const Articles = ({ articles }) => {
     const navigate = useNavigate();
-  const handleLike = (slug) => {
-    const updatedLike = articles.map((article) =>
-      article.slug === slug
-        ? { ...article, favoritesCount: article.favoritesCount + 1 }
-        : article
-    );
-    setArticles(updatedLike);
-   navigate("/")
+    const { user } = LoginUser();
+  const handleLike = async (slug) => {
+     const token = user?.token;
+     try {
+      const response = await fetch(
+        `https://realworld.habsida.net/api/articles/${slug}/favorite`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `${token}`
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Что-то пошло не так!");
+      }
+      const data = await response.json();
+       console.log("Лайк успешно поставлен:", data);
+       navigate("/")
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <ul className="blog-list">

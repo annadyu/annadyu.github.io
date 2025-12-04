@@ -6,7 +6,7 @@ import Pagination from "./pagination.jsx";
 import { useEffect, useState } from "react";
 
 const MainPage = () => {
-   const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,12 +27,12 @@ const MainPage = () => {
         return res.json();
       })
       .then((data) => {
-          setArticles(data.articles);
+        setArticles(data.articles);
+        setTotalArticles(data.articlesCount);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [currentPage]);
-0
   if (loading)
     return (
       <div className="loading-container">
@@ -58,8 +58,7 @@ const MainPage = () => {
       </header>
       <main>
         <VideoNavigation />
-        <Articles articles={articles}
-        setArticles={setArticles} />
+        <Articles articles={articles} setArticles={setArticles} />
       </main>
       <footer>
         <Pagination

@@ -297,6 +297,7 @@ body {
   padding-left: 48px;
   padding-right: 12px;
   border: 1px solid #61BB61;
+  z-index: 100;
 }
 
 .blog-likes:before {
