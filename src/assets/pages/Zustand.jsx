@@ -15,10 +15,10 @@ export const LoginUser = create((set) => ({
   ...initialUser(),
 
   setUser: (data) => {
-    set({ user: data }),
+    set({ user: data });
       localStorage.setItem("registeredUser", JSON.stringify(data));
   },
   clearUser: () => {
-    set({ user: null }), localStorage.removeItem("registeredUser");
+    set({ user: null }); localStorage.removeItem("registeredUser");
   },
 }));
