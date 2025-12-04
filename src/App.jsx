@@ -30,12 +30,6 @@ function App() {
 
       <Route path="articles">
         <Route index element={<MainPage />} />
-
-        <Route
-          path="new"
-          element={<CreateNewArticle />}
-        />
-
         <Route
           path=":slug"
           element={<BlogDetails />}
@@ -48,6 +42,12 @@ function App() {
           element={<PageEditing />}
         />
       </Route>
+
+       <Route
+          path="new-article"
+          element={<CreateNewArticle />}
+        />
+
 
       <Route element={<PrivateRoute />}>
         <Route path="sign-in" element={<SignIn />} />

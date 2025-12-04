@@ -1,14 +1,11 @@
 import { create } from "zustand";
 
 const initialUser = () => {
-  let user = null;
-
   const stored = localStorage.getItem("registeredUser");
-  if (stored) {
-    user = JSON.parse(stored);
-  }
 
-  return user;
+  return {
+    user: stored ? JSON.parse(stored) : null,
+  };
 };
 
 export const LoginUser = create((set) => ({
@@ -16,9 +13,10 @@ export const LoginUser = create((set) => ({
 
   setUser: (data) => {
     set({ user: data });
-      localStorage.setItem("registeredUser", JSON.stringify(data));
+    localStorage.setItem("registeredUser", JSON.stringify(data));
   },
   clearUser: () => {
-    set({ user: null }); localStorage.removeItem("registeredUser");
+    set({ user: null });
+    localStorage.removeItem("registeredUser");
   },
 }));
