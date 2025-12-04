@@ -1,8 +1,7 @@
 import VideoNavigation from "./VideoNavigation.jsx";
 import Header from "./Header.jsx";
 import Articles from "./Articles.jsx";
-import Article from "./Article.jsx";
-import Pagination from "./pagination.jsx";
+import Pagination from  "./Pagination.jsx";
 import { useEffect, useState } from "react";
 
 const MainPage = () => {
