@@ -207,11 +207,17 @@ body {
 }
 
 .blog {
+  display: flex;
+  justify-content: space-between;
   border-radius: 16px;
   padding: 16px;
   border: 1px solid #AAAAAA;
   margin: 0 auto;
   width: 800px;
+}
+
+.blog a {
+  width: 670px;
 }
 
 .blog-list {

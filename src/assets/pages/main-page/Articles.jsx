@@ -1,20 +1,18 @@
-import { Link } from "react-router-dom";
+
 import Article from "./Article";
-import { useNavigate } from "react-router-dom";
 import { LoginUser } from "../Zustand";
 
-const Articles = ({ articles }) => {
-    const navigate = useNavigate();
-    const { user } = LoginUser();
+const Articles = ({ articles, setArticles }) => {
+  const { user } = LoginUser();
   const handleLike = async (slug) => {
-     const token = user?.token;
-     try {
+    const token = user?.token;
+    try {
       const response = await fetch(
         `https://realworld.habsida.net/api/articles/${slug}/favorite`,
         {
           method: "POST",
           headers: {
-            Authorization: `${token}`
+            Authorization: `${token}`,
           },
         }
       );
@@ -22,8 +20,14 @@ const Articles = ({ articles }) => {
         throw new Error("Что-то пошло не так!");
       }
       const data = await response.json();
-       console.log("Лайк успешно поставлен:", data);
-       navigate("/")
+       const updatedArticle = data.article;
+
+    setArticles((prev) =>
+      prev.map((art) =>
+        art.slug === slug ? { ...art, ...updatedArticle } : art
+      )
+    );
+      console.log("Лайк успешно поставлен:", data);
     } catch (error) {
       console.log(error);
     }
@@ -32,9 +36,8 @@ const Articles = ({ articles }) => {
     <ul className="blog-list">
       {articles.map((article) => (
         <li key={article.slug}>
-          <Link to={`/articles/${article.slug}`}>
             <Article
-            slug={article.slug}
+              slug={article.slug}
               key={article.slug}
               author={article.author.username}
               date={article.createdAt}
@@ -44,7 +47,6 @@ const Articles = ({ articles }) => {
               tags={article.tagList}
               handleLike={handleLike}
             />
-          </Link>
         </li>
       ))}
     </ul>
